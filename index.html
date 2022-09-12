@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notes App</title>
 
-    <link rel="stylesheet" href="src/index.css" />
-    <link rel="stylesheet" href="src/styles.css" />
+    <link rel="stylesheet" href="src/styles/index.css" />
+    <link rel="stylesheet" href="src/styles/styles.css" />
+
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -50,8 +51,8 @@
 
         <div class="form-row">
           <label for="category" class="form-label">Category</label>
-          <select name="category" class="form-select">
-            <option value="task">Task</option>
+          <select id="select-category" name="category" class="form-select">
+            <option value="task" selected>Task</option>
             <option value="randomThought">Random Thought</option>
             <option value="idea">Idea</option>
             <option value="quote">Quote</option>
@@ -83,8 +84,8 @@
               </div>
               <p>Task</p>
             </li>
-            <li>1</li>
-            <li>0</li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
           </ul>
           <ul class="table__list-item total-table__list-item">
             <li class="list-item__name">
@@ -93,8 +94,8 @@
               </div>
               <p>Random Thought</p>
             </li>
-            <li>1</li>
-            <li>0</li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
           </ul>
           <ul class="table__list-item total-table__list-item">
             <li class="list-item__name">
@@ -103,8 +104,8 @@
               </div>
               <p>Idea</p>
             </li>
-            <li>1</li>
-            <li>0</li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
           </ul>
           <ul class="table__list-item total-table__list-item">
             <li class="list-item__name">
@@ -113,8 +114,8 @@
               </div>
               <p>Quote</p>
             </li>
-            <li>1</li>
-            <li>0</li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
           </ul>
         </main>
       </div>
