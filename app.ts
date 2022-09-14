@@ -8,6 +8,7 @@ interface ArrayConstructor {
   from<T>(arrayLike: ArrayLike<T>): Array<T>
 }
 
+// categories
 enum Category {
   task = 'task',
   randomThought = 'randomThought',
@@ -16,15 +17,14 @@ enum Category {
 }
 
 interface NoteItem {
-  id: number | string
+  id: string
   name: string
   category: Category
   createdAt: Date
   content: string
 }
 
-// type CategoryStrings = 'task' | 'randomThought' | 'idea' | 'quote'
-
+// starting notes
 let noteList: NoteItem[] = [
   {
     id: Math.random().toString(16).slice(2),
@@ -78,8 +78,8 @@ let noteList: NoteItem[] = [
   },
 ]
 
-const archivedList: NoteItem[] = [],
-  finishedList: NoteItem[] = []
+// note list of archived items
+let archivedList: NoteItem[] = []
 
 const initialActiveArchived = { active: 0, archived: 0 }
 
@@ -91,17 +91,24 @@ const noteCategories = {
 }
 
 const list = document.getElementsByClassName('notes-table-main')[0] as Element
-const button = document.getElementsByClassName('create-note__button')[0]
+const createButton = document.getElementsByClassName('create-note__button')[0]
+const archiveButton = document.getElementsByClassName(
+  'archive-notes__button'
+)[0]
 const closeIcon = document.getElementsByClassName('cancel-icon')[0]
 
 const form = document.getElementById('create-node') as HTMLFormElement
-const nameField = document.querySelector('input[name="name"]') as Element
-const categoryField = document.getElementById('select-category')
-const contentField = document.querySelector('textarea[name="content"]') as Element
+const nameField = document.querySelector(
+  'input[name="name"]'
+) as HTMLInputElement
+const categoryField = document.getElementById(
+  'select-category'
+) as HTMLSelectElement
+const contentField = document.querySelector(
+  'textarea[name="content"]'
+) as HTMLInputElement
 
-console.log(categoryField)
-console.log(contentField)
-
+// get elements to fill total table
 const activeNotesCountElements = document.getElementsByClassName(
   'count-of-active-notes'
 )
@@ -128,17 +135,42 @@ const noteCategoriesElements = {
   },
 }
 
+type editObject = {
+  currentElem: HTMLElement | null
+  category: Category
+  id: string
+} | null
+
 let openForm = false
+let archivedOpen = true
+let isEditing = false
+let currentEditNote: editObject = null
 
-// let isEditing = false
-// let currentEditNote: HTMLElement | null = null
-
-button?.addEventListener('click', () => {
+createButton?.addEventListener('click', () => {
   openForm = showHideForm(form, openForm)
+  setEmptyValuesToForm()
+  nameField.focus()
+})
+
+archiveButton?.addEventListener('click', () => {
+  list.textContent = ''
+
+  if (archivedOpen) {
+    archivedList.forEach((listItem) => {
+      addNewNoteItem(listItem, true)
+    })
+  } else {
+    noteList.forEach((listItem) => {
+      addNewNoteItem(listItem)
+    })
+  }
+
+  archivedOpen = !archivedOpen
 })
 
 closeIcon?.addEventListener('click', () => {
   openForm = showHideForm(form, openForm)
+  isEditing = false
 })
 
 // handle submit
@@ -148,7 +180,7 @@ form!.onsubmit = function (e) {
   const name = formData.get('name') as string
   const category = formData.get('category') as Category
   const content = formData.get('content') as string
-  
+
   const currentNote = {
     id: Math.random().toString(16).slice(2),
     name,
@@ -158,17 +190,29 @@ form!.onsubmit = function (e) {
   }
 
   noteList.push(currentNote)
-  addNewNoteItem(currentNote)
 
-  noteCategories[category].active += 1
+  // add to total count
+  noteCategories[category].active++
+
+  // add 1 active
+  changeTotalView(category)
+
+  addNewNoteItem(currentNote)
 
   // close form
   openForm = showHideForm(form, openForm)
 }
+
 // iife
 ;(() => {
   noteList.forEach((listItem) => {
     addNewNoteItem(listItem)
+
+    // add to total count
+    noteCategories[listItem.category].active++
+
+    // add 1 active
+    changeTotalView(listItem.category)
   })
 
   Array.from(Object.keys(noteCategories)).forEach((category) => {
@@ -176,54 +220,93 @@ form!.onsubmit = function (e) {
   })
 })()
 
-// utils
-function addNewNoteItem(note: NoteItem) {
-  const { id, name, category, createdAt, content } = note
-  const template = getListTemplate(id, name, category, createdAt, content)
-  list.insertAdjacentHTML('afterbegin', template)
+// utils depend on noteList and archiveList
+function addNewNoteItem(note: NoteItem, archived: boolean = false) {
+  if (isEditing) {
+    currentEditNote?.currentElem?.remove()
 
-  // add to total count
-  noteCategories[category].active++
+    noteList = noteList.filter((item) => item.id !== currentEditNote?.id)
+
+    noteCategories[currentEditNote!.category].active--
+    changeTotalView(currentEditNote!.category)
+
+    isEditing = false
+    currentEditNote = null
+  }
+
+  const { id, name, category, createdAt, content } = note
+
+  const template = getListTemplate(
+    id,
+    name,
+    category,
+    createdAt,
+    content,
+    archived
+  )
+  list.insertAdjacentHTML('afterbegin', template)
 
   const currentElem = document.getElementById(`uuid${id}`) as HTMLElement
 
   const deleteIcon = document.querySelector(`#uuid${id} .trash-icon`)
   const editIcon = document.querySelector(`#uuid${id} .edit-icon`)
   const archiveIcon = document.querySelector(`#uuid${id} .archive-icon`)
+  const unarchiveIcon = document.querySelector(`#uuid${id} .unarchive-icon`)
 
   deleteIcon?.addEventListener('click', () => {
     currentElem.remove()
-    noteList = noteList.filter((item) => item.id !== id)
-
     // delete from total
-    noteCategories[category].active--
+    if (archived) {
+      archivedList = archivedList.filter((item) => item.id !== id)
+      noteCategories[category].archived--
+    } else {
+      noteList = noteList.filter((item) => item.id !== id)
+      noteCategories[category].active--
+    }
+
     changeTotalView(category)
   })
 
   editIcon?.addEventListener('click', () => {
     openForm = showHideForm(form, openForm)
-    // isEditing = true
-    // currentEditNote = currentElem;
-
+    isEditing = true
+    currentEditNote = {
+      currentElem,
+      category,
+      id,
+    }
     setCurrentValuesToForm(note)
   })
 
-  archiveIcon?.addEventListener('click', () => {
-    // remove from noteList
-    currentElem.remove()
-    noteList = noteList.filter((item) => item.id !== id)
+  if (!archived) {
+    archiveIcon?.addEventListener('click', () => {
+      currentElem.remove()
+      // remove from noteList
+      noteList = noteList.filter((item) => item.id !== id)
 
-    // push to the archivedList
-    archivedList.push(note)
+      // push to the archivedList
+      archivedList.push(note)
 
-    // add to the total
-    noteCategories[category].active--
-    noteCategories[category].archived++
-    changeTotalView(category)
-  })
+      // add to the total
+      noteCategories[category].active--
+      noteCategories[category].archived++
+      changeTotalView(category)
+    })
+  } else {
+    unarchiveIcon?.addEventListener('click', () => {
+      currentElem.remove()
+      // remove from archivedList
+      archivedList = archivedList.filter((item) => item.id !== id)
 
-  // add 1 active
-  changeTotalView(category)
+      // push to the noteList
+      noteList.push(note)
+
+      // add to the total
+      noteCategories[category].active++
+      noteCategories[category].archived--
+      changeTotalView(category)
+    })
+  }
 
   // scroll to top after adding
   list.scrollTop = 0
@@ -249,7 +332,8 @@ function getListTemplate(
   name: string,
   category: Category,
   createdAt: Date,
-  content: string
+  content: string,
+  archived: boolean
 ): string {
   const dates = getDatesFromContent(content)
   const iconName = getIconName(category)
@@ -271,8 +355,14 @@ function getListTemplate(
               <li>${truncate(content, 15)}</li>
               <li>${dates}</li>
               <li class="list-item__icons">
-                  <img class="edit-icon" src="icons/edit.svg" alt="edit" />
-                  <img class="archive-icon" src="icons/archive.svg" alt="archive" />
+              ${
+                !archived
+                  ? '<img class="edit-icon" src="icons/edit.svg" alt="edit" />'
+                  : ''
+              }
+                  <img class="${
+                    archived ? 'un' : ''
+                  }archive-icon" src="icons/archive.svg" alt="archive" />
                   <img class="trash-icon" src="icons/trash.svg" alt="trash" />
               </li>
           </ul>
@@ -281,17 +371,18 @@ function getListTemplate(
   return htmlListTemplate
 }
 
+// linked to global object
 function setCurrentValuesToForm(currentNote: NoteItem) {
-  const {name, category, content } = currentNote
-
-  nameField.setAttribute('value', name)
-  contentField.textContent = content
-  
-  // const selectList = Array.from(categoryField!.children)
-  
-  // const selectedElem = selectList.filter(item => {
-  //   return item.getAttribute('value') === category
-  // })
+  const { name, category, content } = currentNote
+  nameField.value = name
+  categoryField.value = category
+  contentField.value = content
+}
+// linked to global object
+function setEmptyValuesToForm() {
+  nameField.value = ''
+  categoryField.value = Category.task
+  contentField.value = ''
 }
 
 function getDatesFromContent(content: string): string {
