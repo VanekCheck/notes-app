@@ -1,0 +1,74 @@
+*,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+/* fonts */
+/* @import url(); */
+
+html {
+  font-size: 100%;
+  font-family: 'Open Sans', sans-serif;
+}
+
+:root {
+  /* colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray: #63676c;
+  --light-gray: #e2e8f0;
+
+  /* rest of the vars */
+  --noteBackgroundColor: var(--light-gray);
+  --backgroundColor: var(--gray);
+  --textColor: var(--black);
+  
+  --borderRadius: 0.25rem;
+  --letterSpacing: 1px;
+  --transition: 0.3s ease-in-out all;
+
+  /* box shadow*/
+  --shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-4: 0 10px 15px -1px rgba(0, 0, 0, 0.2),
+    0 8px 7px -1px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* default spinner */
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  width: 6rem;
+  height: 6rem;
+  border: 5px solid white;
+  border-radius: 50%;
+  border-top-color: gray;
+  animation: spinner 2s linear infinite;
+}
+.loading-center {
+  margin: 0 auto;
+}

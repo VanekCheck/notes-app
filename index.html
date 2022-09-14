@@ -1,16 +1,125 @@
- <!DOCTYPE html>
- <html lang="en">
- <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notes App</title>
 
-    <link rel="stylesheet" href="styles.css" />
-    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
 
- </head>
- <body id="root">
-    <h2>gallery project starter</h2>
- </body>
- </html>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="notes-page">
+      <div class="notes-table">
+        <header class="table-header">
+          <ul class="table__list-header notes-table__list-header">
+            <li class="list-item__name-header">Name</li>
+            <li>Created</li>
+            <li>Category</li>
+            <li>Content</li>
+            <li>Dates</li>
+            <li class="list-item__icons">
+              <img
+                class="archive-icon white-icon"
+                src="icons/archive.svg"
+                alt="archive"
+              />
+              <img
+                class="trash-icon white-icon"
+                src="icons/trash.svg"
+                alt="trash"
+              />
+            </li>
+          </ul>
+        </header>
+        <main class="notes-table-main"></main>
+      </div>
+
+      <div class="create-note__section">
+        <button type="button" class="archive-notes__button">My Archive</button>
+        <button type="button" class="create-note__button">Create Note</button>
+      </div>
+      <form id="create-node" class="create-note-form">
+        <img src="icons/cancel.svg" class="cancel-icon white-icon" alt="cancel-icon">
+
+        <div class="form-row">
+          <label for="name" class="form-label">Name</label>
+          <input class="form-input" type="text" name="name" />
+        </div>
+
+        <div class="form-row">
+          <label for="category" class="form-label">Category</label>
+          <select id="select-category" name="category" class="form-select">
+            <option value="task" selected>Task</option>
+            <option value="randomThought">Random Thought</option>
+            <option value="idea">Idea</option>
+            <option value="quote">Quote</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="content" class="form-label">Content</label>
+          <textarea class="form-textarea" type="text" name="content"></textarea>
+        </div>
+        <div class="form-button__wrapper">
+          <button class="form-button" type="submit">Submit</button>
+        </div>
+      </form>
+
+      <div class="total-table">
+        <header class="table-header">
+          <ul class="table__list-header total-table__list-header">
+            <li class="list-item__name-header">Note Category</li>
+            <li>Active</li>
+            <li>Archived</li>
+          </ul>
+        </header>
+        <main class="total-table-main">
+          <ul class="table__list-item total-table__list-item">
+            <li class="list-item__name">
+              <div class="list-item__icon">
+                <img src="/icons/cart.png" alt="cart-icon" />
+              </div>
+              <p>Task</p>
+            </li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
+          </ul>
+          <ul class="table__list-item total-table__list-item">
+            <li class="list-item__name">
+              <div class="list-item__icon">
+                <img src="/icons/mindset.png" alt="cart-icon" />
+              </div>
+              <p>Random Thought</p>
+            </li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
+          </ul>
+          <ul class="table__list-item total-table__list-item">
+            <li class="list-item__name">
+              <div class="list-item__icon">
+                <img src="/icons/bulb.png" alt="cart-icon" />
+              </div>
+              <p>Idea</p>
+            </li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
+          </ul>
+          <ul class="table__list-item total-table__list-item">
+            <li class="list-item__name">
+              <div class="list-item__icon">
+                <img src="/icons/quote.png" alt="cart-icon" />
+              </div>
+              <p>Quote</p>
+            </li>
+            <li class="count-of-active-notes"></li>
+            <li class="count-of-archived-notes"></li>
+          </ul>
+        </main>
+      </div>
+    </main>
+  </body>
+</html>
