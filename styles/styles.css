@@ -92,6 +92,7 @@ main.notes-page {
 }
 
 /* icons */
+.unarchive-icon,
 .archive-icon,
 .trash-icon,
 .edit-icon {
@@ -125,8 +126,18 @@ main.notes-page {
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  gap: 20px;
+  margin-top: 15px;
 }
 .create-note__button {
+  padding: 7.5px 15px;
+
+  border-radius: var(--borderRadius);
+  cursor: pointer;
+
+  font-size: 1rem;
+}
+.archive-notes__button{
   padding: 7.5px 15px;
 
   border-radius: var(--borderRadius);
@@ -148,7 +159,7 @@ main.notes-page {
   position: absolute;
   width: 100%;
 
-  bottom: -150px;
+  bottom: -130px;
 }
 
 /* form */
